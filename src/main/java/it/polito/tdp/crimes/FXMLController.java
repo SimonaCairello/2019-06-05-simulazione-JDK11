@@ -61,6 +61,15 @@ public class FXMLController {
     	
     	txtResult.appendText("Elenco adiacenti per distanza:\n\n");
     	
+    	List<Integer> districts = this.model.getDistricts();
+    	for(Integer d : districts) {
+    		txtResult.appendText("Adiacenti distretto "+d+":\n");
+    		for(CoppiaDistretti dd : this.model.getAdiacenti(d)) {
+    			txtResult.appendText(dd.toString()+"\n");
+    		}
+    		txtResult.appendText("\n");
+    	}
+    	
     	List<CoppiaDistretti> list = this.model.getDistrettiAdiacenti();
     	
     	for(CoppiaDistretti s : list) {

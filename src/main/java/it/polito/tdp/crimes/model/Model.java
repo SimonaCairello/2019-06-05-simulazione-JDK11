@@ -43,18 +43,11 @@ public class Model {
 		
 		for(Integer id : this.graph.vertexSet()) {
 			for(Integer id1 : this.graph.vertexSet()) {
-				CoppiaDistretti c1 = new CoppiaDistretti(id, id1, 0);
-				CoppiaDistretti c2 = new CoppiaDistretti(id1, id, 0);
-				
-				if(!coppieDistretti.contains(c1) && !coppieDistretti.contains(c2) && id!=id1) {
+				if(id!=id1) {
 					Double distanza = LatLngTool.distance(centriDistretti.get(id).getCentro(), centriDistretti.get(id1).getCentro(), LengthUnit.KILOMETER);
-					coppieDistretti.add(new CoppiaDistretti(id, id1, distanza));
+					Graphs.addEdge(this.graph, id, id1, distanza);
 				}
 			}
-		}
-		
-		for(CoppiaDistretti c : coppieDistretti) {
-			Graphs.addEdge(this.graph, c.getId1(), c.getId2(), c.getDistanza());
 		}
 	}
 	
@@ -72,12 +65,10 @@ public class Model {
 		return list;
 	}
 	
-	public List<CoppiaDistretti> getAdiacenti(Integer id){
+	public List<CoppiaDistretti> getAdiacenti(Integer id) {
 		List<CoppiaDistretti> list = new ArrayList<>();
-		for(CoppiaDistretti c : this.coppieDistretti) {
-			if(c.getId1()==id) {
-				list.add(c);
-			}
+		for(Integer adiacente : Graphs.neighborListOf(this.graph, id)) {
+			list.add(new CoppiaDistretti(adiacente, this.graph.getEdgeWeight(this.graph.getEdge(id, adiacente))));
 		}
 		Collections.sort(list);
 		return list;
@@ -128,6 +119,13 @@ public class Model {
 	
 	public Integer getNumMalGestiti() {
 		return this.sim.getNumMalGestiti();
+	}
+	
+	public List<Integer> getDistricts() {
+		List<Integer> list = new ArrayList<>();
+		for(Integer i : this.graph.vertexSet())
+			list.add(i);
+		return list;
 	}
 	
 }

@@ -53,24 +53,22 @@ public class Simulator {
 		case CRIMINE:
 			
 			for(CoppiaDistretti c : coppie) {
-				if(c.getId1()==e.getIdDistretto()) {
-					for(DistrettoNumero d : agentiLiberi.values()) {
-						if(c.getId2()==d.getDistretto() && d.getNum()>0) {
-							d.setNumDim();
-							Long tempoSpostamento = this.getSecondiViaggio(c.getDistanza());
-							Integer tempoCrimine = this.getOreCrimine(e.getOffenseCatId());
-							
-							LocalDateTime arrivo = e.getTime().plusSeconds(tempoSpostamento);
-							if(arrivo.isAfter(e.getTime().plusMinutes(15))) {
-								this.malGestiti++;
-							}
-							
-							arrivo.plusHours(tempoCrimine);
-							
-							EventSim ev = new EventSim(EventType.AGENTE_LIBERO, arrivo, e.getIdDistretto());
-							queue.add(ev);
-							break;
+				for(DistrettoNumero d : agentiLiberi.values()) {
+					if(c.getId()==d.getDistretto() && d.getNum()>0) {
+						d.setNumDim();
+						Long tempoSpostamento = this.getSecondiViaggio(c.getDistanza());
+						Integer tempoCrimine = this.getOreCrimine(e.getOffenseCatId());
+						
+						LocalDateTime arrivo = e.getTime().plusSeconds(tempoSpostamento);
+						if(arrivo.isAfter(e.getTime().plusMinutes(15))) {
+							this.malGestiti++;
 						}
+							
+						arrivo.plusHours(tempoCrimine);
+							
+						EventSim ev = new EventSim(EventType.AGENTE_LIBERO, arrivo, e.getIdDistretto());
+						queue.add(ev);
+						break;
 					}
 				}
 			}
